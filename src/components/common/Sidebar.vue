@@ -37,112 +37,104 @@
         data() {
             return {
                 collapse: false,
-                items: [
-                    {
+                items: [{
                         icon: 'el-icon-lx-home',
                         index: 'home',
                         title: '首页'
-                    },
-                    {
+                    },{
                         icon: 'el-icon-lx-calendar',
                         index: 'news',
                         title: '新闻动态'
-                    },
-                    // {
-                    //     icon: 'el-icon-lx-home',
-                    //     index: 'company',
-                    //     title: '企业管理'
-                    // },
-                    // {
-                    //     icon: 'el-icon-lx-home',
-                    //     index: 'equipment',
-                    //     title: '设备管理'
-                    // },
-                    // {
-                    //     icon: 'el-icon-lx-home',
-                    //     index: 'parameter',
-                    //     title: '参数查询'
-                    // },
-                    // {
-                    //     icon: 'el-icon-lx-home',
-                    //     index: 'data',
-                    //     title: '数据分析'
-                    // },
-                    
-                    {
-                        icon: 'el-icon-lx-home',
-                        index: 'dashboard',
-                        title: '系统首页'
-                    },
-                    {
-                        icon: 'el-icon-lx-cascades',
-                        index: 'table',
-                        title: '基础表格'
-                    },
-                    {
-                        icon: 'el-icon-lx-copy',
-                        index: 'tabs',
-                        title: 'tab选项卡'
-                    },
-                    {
-                        icon: 'el-icon-lx-calendar',
-                        index: '3',
-                        title: '表单相关',
-                        subs: [
-                            {
-                                index: 'form',
-                                title: '基本表单'
-                            },
-                            {
-                                index: '3-2',
-                                title: '三级菜单',
-                                subs: [
-                                    {
-                                        index: 'editor',
-                                        title: '富文本编辑器'
-                                    },
-                                    {
-                                        index: 'markdown',
-                                        title: 'markdown编辑器'
-                                    },
-                                ]
-                            },
-                            {
-                                index: 'upload',
-                                title: '文件上传'
-                            }
-                        ]
-                    },
-                    {
-                        icon: 'el-icon-lx-emoji',
-                        index: 'icon',
-                        title: '自定义图标'
-                    },
-                    {
-                        icon: 'el-icon-lx-favor',
-                        index: 'charts',
-                        title: 'schart图表'
-                    },
-                    {
-                        icon: 'el-icon-rank',
-                        index: 'drag',
-                        title: '拖拽列表'
-                    },
-                    {
+                    },{
                         icon: 'el-icon-lx-warn',
-                        index: '6',
-                        title: '错误处理',
-                        subs: [
-                            {
-                                index: 'permission',
-                                title: '权限测试'
-                            },
-                            {
-                                index: '404',
-                                title: '404页面'
-                            }
-                        ]
-                    }
+                        index: '',
+                        title: '通知公告',
+                        subs: [{
+                                index: 'signup',
+                                title: '赛事报名'
+                            },{
+                                index: 'rule',
+                                title: '比赛规则'
+                            }]
+                    },{
+                        icon: 'el-icon-lx-calendar',
+                        index: 'competition',
+                        title: '竞赛活动'
+                    },
+                    // {
+                    //     icon: 'el-icon-lx-home',
+                    //     index: 'dashboard',
+                    //     title: '系统首页'
+                    // },
+                    // {
+                    //     icon: 'el-icon-lx-cascades',
+                    //     index: 'table',
+                    //     title: '基础表格'
+                    // },
+                    // {
+                    //     icon: 'el-icon-lx-copy',
+                    //     index: 'tabs',
+                    //     title: 'tab选项卡'
+                    // },
+                    // {
+                    //     icon: 'el-icon-lx-calendar',
+                    //     index: '3',
+                    //     title: '表单相关',
+                    //     subs: [
+                    //         {
+                    //             index: 'form',
+                    //             title: '基本表单'
+                    //         },
+                    //         {
+                    //             index: '3-2',
+                    //             title: '三级菜单',
+                    //             subs: [
+                    //                 {
+                    //                     index: 'editor',
+                    //                     title: '富文本编辑器'
+                    //                 },
+                    //                 {
+                    //                     index: 'markdown',
+                    //                     title: 'markdown编辑器'
+                    //                 },
+                    //             ]
+                    //         },
+                    //         {
+                    //             index: 'upload',
+                    //             title: '文件上传'
+                    //         }
+                    //     ]
+                    // },
+                    // {
+                    //     icon: 'el-icon-lx-emoji',
+                    //     index: 'icon',
+                    //     title: '自定义图标'
+                    // },
+                    // {
+                    //     icon: 'el-icon-lx-favor',
+                    //     index: 'charts',
+                    //     title: 'schart图表'
+                    // },
+                    // {
+                    //     icon: 'el-icon-rank',
+                    //     index: 'drag',
+                    //     title: '拖拽列表'
+                    // },
+                    // {
+                    //     icon: 'el-icon-lx-warn',
+                    //     index: '6',
+                    //     title: '错误处理',
+                    //     subs: [
+                    //         {
+                    //             index: 'permission',
+                    //             title: '权限测试'
+                    //         },
+                    //         {
+                    //             index: '404',
+                    //             title: '404页面'
+                    //         }
+                    //     ]
+                    // }
                 ]
             }
         },

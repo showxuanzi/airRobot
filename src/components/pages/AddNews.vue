@@ -26,7 +26,7 @@
                 </el-form-item>
                 <el-form-item label="新闻摘要" prop="keyword">
                     <el-input type="textarea" v-model="form.keyword"></el-input>
-                </el-form-item> 
+                </el-form-item>    
                 <el-form-item label="封面图片" prop="imgpath">
                     <div class="crop-demo">
                         <img :src="cropImg" class="pre-img" v-show="cropImg">
@@ -57,7 +57,7 @@
                         @ready="onEditorReady($event)"
                     ></quill-editor>
                 </el-form-item>
-                <el-button class="editor-btn" type="primary" @click="submit('form')">保存编辑</el-button>
+                <el-button class="editor-btn" type="primary" @click="submit('form')">确认添加</el-button>
             </el-form> 
         </div>
     </div>
@@ -90,7 +90,7 @@
       ['clean']                                         // remove formatting button
     ]
     export default {
-        name: 'newsdetail',
+        name: 'addnews',
         data: function(){
             return {
                 form:{
@@ -100,6 +100,7 @@
                     content: "",
                     keyword: ""
                 },
+                loading: false,
                 rules: {
                     title: [
                         { required: true, message: '请输入新闻标题', trigger: 'blur' }
@@ -114,7 +115,7 @@
                         { required: true, message: '请上传封面图片', trigger: 'change' }
                     ],
                     content: [
-                        { required: true, message: '请输入新闻内容', trigger: 'blur' }
+                        { required: true, message: '请输入新闻内容', trigger: 'click' }
                     ]
                 },
                 selectOptions: [{
@@ -125,10 +126,9 @@
                     label: '前沿科技'
                 }],
                 defaultSrc: './static/img/img.jpg',
-                globalServerUrl: "",
+                
                 cropImg: '',
                 newsId: 0,
-                loading: false,
                 quillUpdateImg: false, // 根据图片上传状态来确定是否显示loading动画，刚开始是false,不显示
                 serverUrl: '',  // 上传的图片服务器地址
                 content: '',
@@ -159,19 +159,8 @@
         created(){
             this.newsId = this.$route.query.id;
             this.serverUrl = globalServerUrl + "/activity/fileupload.do";
-            this.getData();
         },
         methods: {
-            getData(){
-                this.$axios.post(globalServerUrl+"/news/editnews.do",Qs.stringify({
-                    id: this.newsId
-                })).then((res)=>{
-                    console.log(res.data);
-                    this.form = res.data;
-                    this.cropImg = this.form.imgpath;
-                    this.content =  this.form.content;
-                })
-            },
             onEditorChange({ editor, html, text }) {
                 this.content = html;
             },
@@ -181,16 +170,13 @@
             submit(formName){
                 this.form.content = this.content;
                 this.$set(this.form,"createuserid",1);
-                this.$set(this.form,"id",this.newsId);
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        this.$axios.post(globalServerUrl+"/news/editnewssave.do",Qs.stringify(this.form)
+                        this.$axios.post(globalServerUrl+"/news/addnews.do",Qs.stringify(this.form)
                         ).then((res)=>{
                             if(res.data == 1){
-                                this.$message.success('修改成功！');
-                                this.$router.push('/news');
-                            }else if(res.data == 2){
-                                this.$message.error("修改失败！");
+                                this.$message.success('添加成功！');
+                                this.$router.push("/news");
                             }
                         })
                     } else {
@@ -198,6 +184,8 @@
                         return false;
                     }
                 });
+                
+                
             },
            // 富文本图片上传前
             beforeUpload(file) {
@@ -209,10 +197,9 @@
                 //   this.$message.error('上传头像图片只能是 JPG 格式!');
                 // }
                 if (!isLt1M) {
-                  this.$message.error('上传图片大小不能超过 1MB!');
-                  this.loading = false;
+                    this.$message.error('上传图片大小不能超过 1MB!');
+                    this.loading = false;
                 }
-                // return isJPG && isLt1M;
                 return isLt1M;
             },
             uploadSuccess(res, file) {
@@ -236,7 +223,7 @@
             // 富文本图片上传失败
             uploadError() {
                 // loading动画消失
-                this.quillUpdateImg = false
+                this.loading = false;
                 this.$message.error('图片插入失败')
             },
             //文件上传成功的钩子函数

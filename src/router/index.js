@@ -14,48 +14,83 @@ export default new Router({
             path: '/',
             component: resolve => require(['../components/common/Home.vue'], resolve),
             meta: { title: '自述文件' },
-            children:[
-                {
+            children:[{
                     path: '/home',
                     component: resolve => require(['../components/pages/Home.vue'], resolve),
                     meta: { title: '首页' }
-                },
-                {
+                },{
                     path: '/news',
                     component: resolve => require(['../components/pages/News.vue'], resolve),
                     meta: { title: '新闻动态' }
-                },
-                {
+                },{
                     path: '/newsDetail',
                     component: resolve => require(['../components/pages/NewsDetail.vue'], resolve),
                     meta: { title: '新闻详情' }
-                },
-                {
+                },{
+                    path: '/addNews',
+                    component: resolve => require(['../components/pages/AddNews.vue'], resolve),
+                    meta: { title: '添加新闻' }
+                },{
+                    path: '/signup',
+                    component: resolve => require(['../components/pages/Signup.vue'], resolve),
+                    meta: { title: '赛事报名' }
+                },{
+                    path: '/addSignup',
+                    component: resolve => require(['../components/pages/AddSignup.vue'], resolve),
+                    meta: {title: '添加赛事报名'}
+                },{
+                    path: '/signupDetail',
+                    component: resolve => require(['../components/pages/SignupDetail.vue'], resolve),
+                    meta: {title: '赛事报名详情'}
+                },{
+                    path: '/rule',
+                    component: resolve => require(['../components/pages/Rule.vue'], resolve),
+                    meta: { title: '比赛规则' }
+                },{
+                    path: '/addRule',
+                    component: resolve => require(['../components/pages/AddRule.vue'], resolve),
+                    meta: { title: '添加比赛规则'}
+                },{
+                    path: '/ruleDetail',
+                    component: resolve => require(['../components/pages/RuleDetail.vue'], resolve),
+                    meta: { title: '比赛规则详情'}
+                },{
+                    path: '/competition',
+                    component: resolve => require(['../components/pages/Competition.vue'], resolve),
+                    meta: { title: '竞赛活动'}
+                },{
+                    path: '/competitionItem',
+                    component: resolve => require(['../components/pages/CompetitionItem.vue'], resolve),
+                    meta: { title: '竞赛活动项目'}
+                },{
+                    path: '/comItemRule',
+                    component: resolve => require(['../components/pages/ComItemRule.vue'], resolve),
+                    meta: { title: '比赛规则'}
+                },{
+                    path: '/comItemVideo',
+                    component: resolve => require(['../components/pages/ComItemVideo.vue'], resolve),
+                    meta: { title: '比赛视频'}
+                },{
                     path: '/dashboard',
                     component: resolve => require(['../components/page/Dashboard.vue'], resolve),
                     meta: { title: '系统首页' }
-                },
-                {
+                },{
                     path: '/icon',
                     component: resolve => require(['../components/page/Icon.vue'], resolve),
                     meta: { title: '自定义图标' }
-                },
-                {
+                },{
                     path: '/table',
                     component: resolve => require(['../components/page/BaseTable.vue'], resolve),
                     meta: { title: '基础表格' }
-                },
-                {
+                },{
                     path: '/tabs',
                     component: resolve => require(['../components/page/Tabs.vue'], resolve),
                     meta: { title: 'tab选项卡' }
-                },
-                {
+                },{
                     path: '/form',
                     component: resolve => require(['../components/page/BaseForm.vue'], resolve),
                     meta: { title: '基本表单' }
-                },
-                {
+                },{
                     // 富文本编辑器组件
                     path: '/editor',
                     component: resolve => require(['../components/page/VueEditor.vue'], resolve),
@@ -114,6 +149,12 @@ export default new Router({
         {
             path: '*',
             redirect: '/404'
+        },
+        {
+            path: '/index.html',
+             
+            redirect: '/news',
+            component: resolve => require(['../components/pages/Home.vue'], resolve)
         }
     ]
 })

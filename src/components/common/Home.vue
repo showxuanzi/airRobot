@@ -6,9 +6,9 @@
             <v-tags></v-tags>
             <div class="content">
                 <transition name="move" mode="out-in">
-                    <keep-alive :include="tagsList">
-                        <router-view></router-view>
-                    </keep-alive>
+                    <!-- <keep-alive> -->
+                        <router-view :key="$route.fullPath"></router-view>
+                    <!-- </keep-alive> -->
                 </transition>
             </div>
         </div>
@@ -40,6 +40,11 @@
                 let arr = [];
                 for(let i = 0, len = msg.length; i < len; i ++){
                     msg[i].name && arr.push(msg[i].name);
+                    // if(msg[i].name){
+                    //     if(msg[i].name != "newsdetail"){
+                    //         arr.push(msg[i].name);
+                    //     }
+                    // }
                 }
                 this.tagsList = arr;
             })

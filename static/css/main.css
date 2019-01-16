@@ -175,3 +175,6 @@ a {
 .el-dialog__header{
     background-color: #f8f8f8;
 }
+.el-loading-spinner i{
+    font-size: 30px;
+}

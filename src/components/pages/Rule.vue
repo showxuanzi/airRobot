@@ -2,16 +2,17 @@
     <div>
         <div class="container">
             <div class="handle-box">
-                <el-button type="primary" icon="delete" class="handle-del mr10" @click="handleAdd()">添加新闻</el-button>
+                <el-button type="primary" icon="delete" class="handle-del mr10" @click="handleAdd()">添加比赛规则</el-button>
             </div>
             <el-table :data="tableData" border class="table">
-                <el-table-column label="封面图片" align="center">
+                <el-table-column label="图片" align="center">
                     <template slot-scope="scope">
                         <img class="banner" :src="scope.row.imgpath">
                     </template>
                 </el-table-column>
-                <el-table-column prop="title" label="新闻标题" align="center"></el-table-column>
-                <el-table-column prop="type" label="新闻分类" align="center" width="200"></el-table-column>
+                <el-table-column prop="title" label="标题" align="center"></el-table-column>
+                <el-table-column prop="dianzancount" label="点赞量" width="100" align="center"></el-table-column>
+                <el-table-column prop="lookcount" label="浏览量" width="100" align="center"></el-table-column>
                 <el-table-column prop="createtime" label="上传时间" width="200" align="center"></el-table-column>
                 <el-table-column label="操作" width="180" align="center">
                     <template slot-scope="scope">
@@ -20,7 +21,7 @@
                     </template>
                 </el-table-column>
             </el-table>
-            <div class="pagination">
+            <div class="pagination" v-show="totalNumber>0">
                 <el-pagination background @current-change="handleCurrentChange" layout="prev, pager, next" :total="totalNumber"></el-pagination>
             </div>
         </div>
@@ -38,7 +39,7 @@
 <script>
     import Qs from 'qs';
     export default {
-        name: 'news',
+        name: 'rule',
         data: function(){
             return {
                 tableData: [],
@@ -49,20 +50,22 @@
                     type: '',
                     createtime: ''
                 },
-                newsId: "",
+                deleteSignupId: "",
                 totalNumber:1,
-                cur_page: 1
+                cur_page: 1,
+                cur_type: "比赛规则"
             }
         },
         methods:{
             // 初始化表格数据
             getData() {
-                this.$axios.post(globalServerUrl+"/news/newsList.do", Qs.stringify({
+                this.$axios.post(globalServerUrl+"/news/noticeList.do", Qs.stringify({
+                    type: this.cur_type,
                     page: this.cur_page,
                     limit: 10
                 })).then((res) => {
                     // 如果当前页面没有数据，则重新请求上一页的内容
-                     if(res.data.data.length == 0 && this.cur_page > 1){
+                    if(res.data.data.length == 0 && this.cur_page > 1){
                         this.cur_page = this.cur_page - 1;
                         this.getData();
                         return 
@@ -75,7 +78,7 @@
             // 编辑按钮
             handleEdit(id) {
                 this.$router.push({
-                    path: '/newsDetail',
+                    path: '/ruleDetail',
                     query: {
                         id: id
                     }
@@ -83,17 +86,17 @@
             },
             // 添加按钮
             handleAdd(){
-                this.$router.push("/addNews");
+                this.$router.push("/addRule");
             },
             // 删除按钮
             handleDelete(id) {
                 this.delVisible = true;
-                this.newsId = id;
+                this.deleteSignupId = id;
             },
             // 确定删除
             deleteRow(){
-                this.$axios.post(globalServerUrl+"/news/deletenews.do", Qs.stringify({
-                    id: this.newsId
+                this.$axios.post(globalServerUrl+"/news/deletenotice.do", Qs.stringify({
+                    id: this.deleteSignupId
                 })).then((res) => {
                     if(res.data == 1){
                         this.$message.success('删除成功');
@@ -194,7 +197,7 @@
         cursor: pointer;
     }
     .cell img.banner{
-        height: 50px;
+         height: 50px;
         width: auto;
     }
 </style>

@@ -4,37 +4,34 @@
             <div class="handle-box">
                 <el-button type="primary" icon="delete" class="handle-del mr10" @click="handleAdd()">添加banner</el-button>
             </div>
-            <el-table :data="tableData" border class="table" ref="multipleTable">
-                <el-table-column prop="date" label="图片" align="center">
+            <el-table :data="tableData" border class="table">
+                <el-table-column label="图片" align="right">
                     <template slot-scope="scope">
-                        <img class="banner" :src="scope.row.url">
+                        <img class="banner" :src="scope.row.imgpath">
                     </template>
                 </el-table-column>
-                <el-table-column prop="order" label="顺序" width="100" align="center"></el-table-column>
-                <el-table-column prop="date" label="上传时间" width="200" align="center"></el-table-column>
+                <!-- <el-table-column prop="order" label="顺序" width="100" align="center"></el-table-column> -->
+                <!-- <el-table-column prop="date" label="上传时间" width="200" align="center"></el-table-column> -->
                 <el-table-column label="操作" width="180" align="center">
                     <template slot-scope="scope">
-                        <el-button type="text" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-                        <el-button type="text" icon="el-icon-delete" class="blue" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                        <!-- <el-button type="text" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">编辑</el-button> -->
+                        <el-button type="text" icon="el-icon-delete" class="blue" @click="handleDelete(scope.row.id)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
         </div>
         <!-- 编辑弹出框 -->
-        <el-dialog :title="dialogTitle" :visible.sync="editVisible" width="30%">
-            <el-form ref="form" :model="form" label-width="50px">
+        <el-dialog :title="dialogTitle" :visible.sync="editVisible" width="30%" v-loading="loading" 
+            element-loading-text="图片上传中，请稍等"
+            element-loading-spinner="el-icon-loading"
+            element-loading-background="rgba(0, 0, 0, 0.6)">
+            <el-form ref="form" :model="form" label-width="50px" >
                 <el-form-item label="banner" class="uploadBox">
-                    <img :src="form.url" class="pre-img">
+                    <img :src="cropImg" v-show="cropImg" class="pre-img">
                     <div class="crop-demo-btn">选择图片
                         <input class="crop-input" type="file" name="image" accept="image/*" @change="setImage"/>
                     </div>
                 </el-form-item>
-                <el-form-item label="顺序">
-                    <el-input v-model="form.order"></el-input>
-                </el-form-item>
-                <el-form-item label="日期">
-                    <el-date-picker type="date" placeholder="选择日期" v-model="form.date" value-format="yyyy-MM-dd" style="width: 100%;"></el-date-picker>
-                </el-form-item> 
             </el-form>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="editVisible = false">取 消</el-button>
@@ -53,7 +50,7 @@
 </template>
 
 <script>
-    import VueCropper  from 'vue-cropperjs';
+    import Qs from 'qs';
     export default {
         name: 'home',
         data: function(){
@@ -63,30 +60,38 @@
                 editVisible: false,
                 delVisible: false,
                 form: {
-                    url: '',
-                    order: '',
-                    date: ''
+                    imgpath: '',
                 },
+                
+                cropImg:"",
+                deleteImgId: "",
+                loading: false
             }
-        },
-        components: {
-            VueCropper
         },
         methods:{
             // 初始化表格数据
             getData() {
-                this.$axios.post("https://www.easy-mock.com/mock/5c2d7a9e410de05f5d0de700/xmx/banner", {
-                    page: 1
-                }).then((res) => {
-                    console.log(res.data);
-                    this.tableData = res.data.list;
+                this.$axios.post(globalServerUrl+"/common/bannerList.do"
+                ).then((res) => {
+                    this.tableData = res.data;
                 })
             },
             // 保存编辑
             saveEdit() {
-                this.$set(this.tableData, this.idx, this.form);
-                this.editVisible = false;
-                this.$message.success(`修改成功`);
+                // this.$set(this.tableData, this.idx, this.form);
+                // this.editVisible = false;
+                // this.$message.success(`修改成功`);
+                this.$axios.post(globalServerUrl+"/common/addbanner.do",Qs.stringify({
+                    imgpath: this.cropImg
+                })).then((res) => {
+                    if(res.data == 1){
+                        this.editVisible = false;
+                        this.$message.success(`添加成功`);
+                        this.getData();
+                    }else if(res.data == 2){
+                        this.$message.error(`添加失败`);
+                    }
+                })
             },
             // 编辑按钮
             handleEdit(index, row) {
@@ -101,42 +106,52 @@
             },
             // 添加按钮
             handleAdd(){
+                this.cropImg = "";
                 this.editVisible = true;
                 this.dialogTitle = "添加";
-                // this.$nextTick(() => {
-                //   this.$refs['form'].resetFields();
-                // });
-                this.form = {
-                    url: '',
-                    order: '',
-                    date: ''
-                };
             },
             // 删除按钮
-            handleDelete(index, row) {
+            handleDelete(id) {
+                console.log(id);
+                this.deleteImgId = id;
                 this.delVisible = true;
             },
             // 确定删除
             deleteRow(){
-                this.$message.success('删除成功');
-                this.delVisible = false;
+                this.$axios.post(globalServerUrl+"/common/delete.do",Qs.stringify({
+                    id: this.deleteImgId
+                })).then((res) => {
+                    console.log(res)
+                    if(res.data == 1){
+                        this.$message.success('删除成功');
+                        this.getData();
+                    }else{
+                        this.$message.error('删除失败');
+                    }
+                    this.delVisible = false;
+                })
+                
+                
             },
             // 上传图片
             setImage(e){
+                this.loading = true;
                 const file = e.target.files[0];
                 if (!file.type.includes('image/')) {
                     return;
                 }
-                const reader = new FileReader();
-                reader.onload = (event) => {
-                    this.form.url = event.target.result;
-                    this.$refs.cropper && this.$refs.cropper.replace(event.target.result);
-                };
-                reader.readAsDataURL(file);
+                let formData = new FormData();
+                formData.append("file",file);
+                this.$axios.post(globalServerUrl+"/activity/fileupload.do",
+                    formData,
+                ).then((res)=>{
+                    console.log(res);
+                    this.cropImg = globalServerUrl + res.data;
+                    this.loading = false;
+                })
             }
         },
         created(){
-            this.cropImg = this.defaultSrc;
             this.getData();
         }
     }
@@ -184,14 +199,14 @@
     }
     .crop-demo-btn{
         display: inline-block;
-        width: 100px;
-        height: 40px;
-        line-height: 40px;
+        width: 90px;
+        height: 30px;
+        line-height: 30px;
         padding: 0 20px;
         margin-left: 30px;
         background-color: #fa820c;
         color: #fff;
-        font-size: 14px;
+        font-size: 12px;
         border-radius: 4px;
         box-sizing: border-box;
         position: absolute;
@@ -208,6 +223,7 @@
         cursor: pointer;
     }
     .cell img.banner{
-        width: 60%;
+         height: 150px;
+        width: auto;
     }
 </style>

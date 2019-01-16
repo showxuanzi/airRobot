@@ -64,12 +64,13 @@
                 if(!isExist){
                     if(this.tagsList.length >= 8){
                         this.tagsList.shift();
-                    }
-                    this.tagsList.push({
-                        title: route.meta.title,
-                        path: route.fullPath,
-                        name: route.matched[1].components.default.name
-                    })
+                    }else{
+                        this.tagsList.push({
+                            title: route.meta.title,
+                            path: route.fullPath,
+                            name: route.matched[1].components.default.name
+                        });
+                    } 
                 }
                 bus.$emit('tags', this.tagsList);
             },

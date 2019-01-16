@@ -2,8 +2,9 @@
     <div>
         <div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item><i class="el-icon-lx-calendar"></i> 新闻动态</el-breadcrumb-item>
-                <el-breadcrumb-item>新闻详情</el-breadcrumb-item>
+                <el-breadcrumb-item><i class="el-icon-lx-calendar"></i> 通知公告</el-breadcrumb-item>
+                <el-breadcrumb-item>赛事报名</el-breadcrumb-item>
+                <el-breadcrumb-item>赛事报名详情</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
         <div class="container"  v-loading="loading" 
@@ -11,20 +12,10 @@
                 element-loading-spinner="el-icon-loading"
                 element-loading-background="rgba(0, 0, 0, 0.6)">
             <el-form ref="form" :model="form" :rules="rules" label-width="80px" class="news-form">
-                <el-form-item label="新闻标题" prop="title">
+                <el-form-item label="规则名称" prop="title">
                     <el-input v-model="form.title"></el-input>
                 </el-form-item>
-                <el-form-item label="新闻分类" prop="type">
-                    <el-select placeholder="请选择" v-model="form.type">
-                        <el-option
-                          v-for="item in selectOptions"
-                          :key="item.value"
-                          :label="item.label"
-                          :value="item.value">
-                        </el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="新闻摘要" prop="keyword">
+                <el-form-item label="规则概述" prop="keyword">
                     <el-input type="textarea" v-model="form.keyword"></el-input>
                 </el-form-item> 
                 <el-form-item label="封面图片" prop="imgpath">
@@ -48,7 +39,7 @@
                         >
                 </el-upload>
                 <!-- 图片上传组件辅助-->
-                 <el-form-item label="新闻内容" prop="content">
+                 <el-form-item label="比赛内容" prop="content">
                     <quill-editor 
                         ref="myTextEditor" 
                         v-model="content" 
@@ -90,44 +81,47 @@
       ['clean']                                         // remove formatting button
     ]
     export default {
-        name: 'newsdetail',
+        name: 'ruledetail',
         data: function(){
             return {
                 form:{
-                    title:"",
-                    type: "",
+                    title: "",
                     imgpath: "",
                     content: "",
                     keyword: ""
                 },
+                cur_type: "比赛规则",
                 rules: {
                     title: [
-                        { required: true, message: '请输入新闻标题', trigger: 'blur' }
-                    ],
-                    type: [
-                        { required: true, message: '请选择新闻分类', trigger: 'change' }
+                        { required: true, message: '请输入规则名称', trigger: 'blur' }
                     ],
                     keyword: [
-                        { required: true, message: '请输入新闻摘要', trigger: 'blur' }
+                        { required: true, message: '请输入规则概述', trigger: 'blur' }
                     ],
                     imgpath: [
                         { required: true, message: '请上传封面图片', trigger: 'change' }
                     ],
                     content: [
-                        { required: true, message: '请输入新闻内容', trigger: 'blur' }
+                        { required: true, message: '请输入规则内容', trigger: 'blur' }
                     ]
                 },
                 selectOptions: [{
-                    value: '赛事动态',
-                    label: '赛事动态'
+                    value: '分类1',
+                    label: '分类1'
                 },{
-                    value: '前沿科技',
-                    label: '前沿科技'
+                    value: '分类2',
+                    label: '分类2'
+                },{
+                    value: '分类3',
+                    label: '分类3'
+                },{
+                    value: '分类4',
+                    label: '分类4'
                 }],
                 defaultSrc: './static/img/img.jpg',
-                globalServerUrl: "",
+                
                 cropImg: '',
-                newsId: 0,
+                signupId: 0,
                 loading: false,
                 quillUpdateImg: false, // 根据图片上传状态来确定是否显示loading动画，刚开始是false,不显示
                 serverUrl: '',  // 上传的图片服务器地址
@@ -157,16 +151,15 @@
             quillEditor
         },
         created(){
-            this.newsId = this.$route.query.id;
+            this.signupId = this.$route.query.id;
             this.serverUrl = globalServerUrl + "/activity/fileupload.do";
             this.getData();
         },
         methods: {
             getData(){
-                this.$axios.post(globalServerUrl+"/news/editnews.do",Qs.stringify({
-                    id: this.newsId
+                this.$axios.post(globalServerUrl+"/news/editnotice.do",Qs.stringify({
+                    id: this.signupId
                 })).then((res)=>{
-                    console.log(res.data);
                     this.form = res.data;
                     this.cropImg = this.form.imgpath;
                     this.content =  this.form.content;
@@ -181,14 +174,15 @@
             submit(formName){
                 this.form.content = this.content;
                 this.$set(this.form,"createuserid",1);
-                this.$set(this.form,"id",this.newsId);
+                this.$set(this.form,"id",this.signupId);
+                this.$set(this.form,"type",this.cur_type);
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        this.$axios.post(globalServerUrl+"/news/editnewssave.do",Qs.stringify(this.form)
+                        this.$axios.post(globalServerUrl+"/news/editnoticesave.do",Qs.stringify(this.form)
                         ).then((res)=>{
                             if(res.data == 1){
                                 this.$message.success('修改成功！');
-                                this.$router.push('/news');
+                                this.$router.push('/signup');
                             }else if(res.data == 2){
                                 this.$message.error("修改失败！");
                             }
