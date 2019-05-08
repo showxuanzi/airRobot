@@ -3,8 +3,9 @@
         <div class="container">
             <div class="handle-box">
                 <el-button type="primary" icon="delete" class="handle-del mr10" @click="handleAdd()">添加新闻</el-button>
+                <el-button type="primary" icon="delete" class="handle-del mr10" @click="exportOut()">导出</el-button>
             </div>
-            <el-table :data="tableData" border class="table">
+            <el-table :data="tableData" border class="table" id="out-table">
                 <el-table-column label="封面图片" align="center">
                     <template slot-scope="scope">
                         <img class="banner" :src="scope.row.imgpath">
@@ -37,13 +38,17 @@
 
 <script>
     import Qs from 'qs';
+    import FileSaver from 'file-saver';
+    import XLSX from 'xlsx';
     export default {
         name: 'news',
         data: function(){
             return {
                 tableData: [],
+                oldtableData: [],
                 delVisible: false,
-                
+                ableExportOut: false,
+                limit: '10',
                 form: {
                     title: '',
                     type: '',
@@ -54,21 +59,77 @@
                 cur_page: 1
             }
         },
+        updated() {
+            console.log(123);
+        },
         methods:{
+            // 
+            // exportExcel () {
+            //     /* generate workbook object from table */
+            //     var xlsxParam = { raw: true } // 导出的内容只做解析，不进行格式转换
+            //     var wb = XLSX.utils.table_to_book(document.querySelector('#out-table'))
+            //     /* get binary string as output */
+            //     var wbout = XLSX.write(wb, { bookType: 'xlsx', bookSST: true, type: 'array' })
+            //     try {
+            //         FileSaver.saveAs(new Blob([wbout], { type: 'application/octet-stream' }), 'sheetjs.xlsx')
+            //     } catch (e) { if (typeof console !== 'undefined') console.log(e, wbout) }
+            //     return wbout
+            // },
+            // async activeExportOut(){
+            //     this.ableExportOut = true //设置可以下载
+            //     this.oldtableData = this.tableData //保存起就数据
+            //     await this.setData()
+            //     this.exportOut()
+            // },
+            // setData(){
+            //     this.tableData = test; //赋值新数据       
+            // },
+            exportOut(){
+                this.limit = 100;
+                this.cur_page = 1;
+                this.getData(this.cur_page,this.limit);
+                this.$nextTick(function () {
+                    var obj = document.querySelector('#out-table')
+                    console.log(obj)
+                    let wb = XLSX.utils.table_to_book(obj);
+                    /* get binary string as output */
+                    let wbout = XLSX.write(wb, {bookType: 'xlsx', bookSST: true, type: 'array'});
+                    try {
+                        FileSaver.saveAs(new Blob([wbout], {type: 'application/octet-stream'}), '表格名字.xlsx')
+                    } catch (e) {
+                        if (typeof console !== 'undefined') console.log(e, wbout)
+                    }
+                    console.log("inner");
+                    this.getData(1,10);
+                    return wbout
+                })
+                //
+                console.log(111);
+                // var wb = XLSX.utils.table_to_book(document.querySelector('#out-table'))
+                // var wbout = XLSX.write(wb, { bookType: 'xlsx', bookSST: true, type: 'array' })
+                // try {
+                //     FileSaver.saveAs(new Blob([wbout], { type: 'application/octet-stream' }), 'sheetjs.xlsx')
+                // } catch (e) { if (typeof console !== 'undefined') console.log(e, wbout) }
+                
+                // this.ableExportOut = false //设置不可下载
+                // this.tableData = this.oldtableData //回复原来说的数据
+                // return wbout
+            },
             // 初始化表格数据
-            getData() {
+            getData(page,limit) {
                 this.$axios.post(globalServerUrl+"/news/newsList.do", Qs.stringify({
-                    page: this.cur_page,
-                    limit: 10
+                    page: page,
+                    limit: limit
                 })).then((res) => {
                     // 如果当前页面没有数据，则重新请求上一页的内容
                      if(res.data.data.length == 0 && this.cur_page > 1){
                         this.cur_page = this.cur_page - 1;
-                        this.getData();
+                        this.getData(this.cur_page,this.limit);
                         return 
                     }else{
                         this.tableData = res.data.data;
                         this.totalNumber = res.data.count;
+                        console.log("done");
                     }
                 })
             },
@@ -98,7 +159,7 @@
                     if(res.data == 1){
                         this.$message.success('删除成功');
                         this.delVisible = false;
-                        this.getData();
+                        this.getData(this.cur_page,this.limit);
                     }
                 })
                 
@@ -118,12 +179,12 @@
             },
             handleCurrentChange(val) {
                 this.cur_page = val;
-                this.getData();
+                this.getData(this.cur_page,this.limit);
             }
         },
         created(){
             this.cropImg = this.defaultSrc;
-            this.getData();
+            this.getData(this.cur_page,this.limit);
         }
     }
 </script>

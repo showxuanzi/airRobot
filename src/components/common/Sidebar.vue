@@ -60,6 +60,10 @@
                         icon: 'el-icon-lx-calendar',
                         index: 'competition',
                         title: '竞赛活动'
+                    },{
+                        icon: 'el-icon-lx-calendar',
+                        index: 'entername',
+                        title: '报名信息'
                     },
                     // {
                     //     icon: 'el-icon-lx-home',

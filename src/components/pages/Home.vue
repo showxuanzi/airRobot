@@ -5,7 +5,7 @@
                 <el-button type="primary" icon="delete" class="handle-del mr10" @click="handleAdd()">添加banner</el-button>
             </div>
             <el-table :data="tableData" border class="table">
-                <el-table-column label="图片" align="right">
+                <el-table-column label="图片" align="center">
                     <template slot-scope="scope">
                         <img class="banner" :src="scope.row.imgpath">
                     </template>

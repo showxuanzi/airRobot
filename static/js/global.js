@@ -1,1 +1,1 @@
-window.globalServerUrl = "http://47.93.32.156:8081";
+window.globalServerUrl = "http://localhost:8088";

@@ -71,6 +71,10 @@ export default new Router({
                     component: resolve => require(['../components/pages/ComItemVideo.vue'], resolve),
                     meta: { title: '比赛视频'}
                 },{
+                    path: '/enterName',
+                    component: resolve => require(['../components/pages/EnterName.vue'], resolve),
+                    meta: { title: '报名信息'}
+                },{
                     path: '/dashboard',
                     component: resolve => require(['../components/page/Dashboard.vue'], resolve),
                     meta: { title: '系统首页' }
