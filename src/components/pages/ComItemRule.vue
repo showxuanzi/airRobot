@@ -44,8 +44,7 @@
                         :show-file-list="false"
                         :on-success="uploadSuccess"
                         :on-error="uploadError"
-                        :before-upload="beforeUpload"
-                        >
+                        :before-upload="beforeUpload">
                 </el-upload>
                 <!-- 图片上传组件辅助-->
                  <el-form-item label="规则内容" prop="content">
