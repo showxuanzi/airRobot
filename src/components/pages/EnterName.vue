@@ -5,13 +5,11 @@
                 <el-form :inline="true" ref="formInline" :model="formInline" class="demo-form-inline">
                     <el-form-item label="参赛项目">
                         <el-select v-model="formInline.compId" placeholder="参赛项目">
-                            <!-- <el-option label="区域一" value="shanghai"></el-option>
-                            <el-option label="区域二" value="beijing"></el-option> -->
                             <el-option 
                                 v-for="item in selectItem"
                                 :key="item.id"
                                 :label="item.name"
-                                :value="item.name">
+                                :value="item.id">
                             </el-option>
                         </el-select>
                     </el-form-item>
@@ -21,32 +19,60 @@
                             <el-option label="家庭组" value="1"></el-option>
                         </el-select>
                     </el-form-item>
+                    <el-form-item label="审核状态">
+                        <el-select v-model="formInline.shenhe" placeholder="审核状态">
+                            <el-option label="未审核" value="未审核"></el-option>
+                            <el-option label="已通过" value="已通过"></el-option>
+                            <el-option label="未通过" value="未通过"></el-option>
+                        </el-select>
+                    </el-form-item>
                     <el-form-item>
                         <el-button type="primary" @click="search('formInline')">查询</el-button>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button type="primary" @click="exportExcel('formInline')">导出</el-button>
                     </el-form-item>
                 </el-form>
             </div>
             <el-table :data="tableData" border class="table">
-                <el-table-column label="参赛项目" align="center" prop="name"></el-table-column>
-                <el-table-column label="区" align="center" prop="name"></el-table-column>
-                <el-table-column label="邮编" align="center" prop="name"></el-table-column>
-                <el-table-column label="领队" align="center" prop="name"></el-table-column>
-                <el-table-column label="联系电话" align="center" prop="name"></el-table-column>
-                <el-table-column label="联系地址" align="center" prop="name"></el-table-column>
-                <el-table-column label="电子邮箱" align="center" prop="name"></el-table-column>
-                <el-table-column label="组别" align="center" prop="name"></el-table-column>
-                <el-table-column label="参赛队名" align="center" prop="name"></el-table-column>
-                <el-table-column label="队员1" align="center" prop="name"></el-table-column>
-                <el-table-column label="性别" align="center" prop="name"></el-table-column>
-                <el-table-column label="身份证号" align="center" prop="name"></el-table-column>
-                <el-table-column label="学校" align="center" prop="name"></el-table-column>
-                <el-table-column label="队员2" align="center" prop="name"></el-table-column>
-                <el-table-column label="身份证号" align="center" prop="name"></el-table-column>
-                <el-table-column label="学校" align="center" prop="name"></el-table-column>
-                <el-table-column label="辅导教师" align="center" prop="name"></el-table-column>
-                <el-table-column label="操作" width="100" align="center">
+                <el-table-column label="参赛项目" width="200" align="center" prop="compname"></el-table-column>
+                <el-table-column label="区" width="80" align="center" prop="quyu"></el-table-column>
+                <el-table-column label="邮编" width="80" align="center" prop="youbian"></el-table-column>
+                <el-table-column label="领队" width="80" align="center" prop="lingdui"></el-table-column>
+                <el-table-column label="联系电话" width="110" align="center" prop="mobile"></el-table-column>
+                <el-table-column label="联系地址" width="200" align="center" prop="dizhi"></el-table-column>
+                <el-table-column label="电子邮箱" width="200" align="center" prop="email"></el-table-column>
+                <el-table-column label="组别" width="50"  align="center" prop="zubie"></el-table-column>
+                <el-table-column label="参赛队名" width="200"  align="center" prop="zuname"></el-table-column>
+
+                <template v-if="formInline.leixing == 0">
+                    <el-table-column label="队员1" width="80" align="center" prop="studentname"></el-table-column>
+                </template>
+                <template v-if="formInline.leixing == 0">
+                    <el-table-column label="学生姓名" width="80" align="center" prop="studentname"></el-table-column>
+                </template>
+
+                <el-table-column label="性别" width="50" align="center" prop="sex"></el-table-column>
+                <el-table-column label="身份证号" width="150" align="center" prop="idnumber"></el-table-column>
+                <el-table-column label="学校" width="200" align="center" prop="xuexiao"></el-table-column>
+                <template v-if="formInline.leixing == 0">
+                    <el-table-column label="队员2" width="80" align="center" prop="student2name"></el-table-column>
+                    <el-table-column label="性别" width="50" align="center" prop="sex2"></el-table-column>
+                    <el-table-column label="身份证号" width="150" align="center" prop="idnumber2"></el-table-column>
+                    <el-table-column label="学校" width="200" align="center" prop="xuexiao2"></el-table-column>
+                </template>
+                <template v-if="formInline.leixing == 1">
+                    <el-table-column label="家长1" width="80" align="center" prop="parentone"></el-table-column>
+                    <el-table-column label="家长2" width="80" align="center" prop="parenttwo"></el-table-column>
+                </template>
+
+                <el-table-column label="辅导教师" width="80" align="center" prop="teacher"></el-table-column>
+                <el-table-column label="操作" fixed="right" width="180" align="center">
                     <template slot-scope="scope">
-                        <el-button type="text" icon="el-icon-edit" class="blue" @click="handleEdit(scope.row)">审核</el-button>
+                        <el-button type="success"  plain v-if="scope.row.teacherstatus=='未审核'" @click="handleYes(scope.row)">通过</el-button>
+                        <el-button type="primary" plain v-if="scope.row.teacherstatus=='未审核'" @click="handleNo(scope.row)">不通过</el-button>
+                        <el-button type="text" class="blue"  plain icon="el-icon-circle-check-outline" v-if="scope.row.teacherstatus=='已通过'">已通过</el-button>
+                        <el-button type="text" plain icon="el-icon-circle-close-outline" v-if="scope.row.teacherstatus=='未通过'">未通过</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -54,24 +80,24 @@
                 <el-pagination background @current-change="handleCurrentChange" layout="prev, pager, next" :total="totalNumber"></el-pagination>
             </div>
         </div>
-        <!-- 编辑弹出框 -->
-        <el-dialog :title="dialogTitle" :visible.sync="addVisible" width="30%">
-            <el-form ref="form" :model="form" :rules="rules" label-width="100px" >
-               <el-form-item label="竞赛名称" prop="name">
-                    <el-input v-model="form.name"></el-input>
+        <!-- 审核通过提示 -->
+        <el-dialog title="提示" :visible.sync="yesReview" width="300px" center>
+            <div class="del-dialog-cnt">确定通过该审核吗？</div>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="yesReview = false">取消</el-button>
+                <el-button type="primary" @click="reviewYes">确定</el-button>
+            </span>
+        </el-dialog>
+        <!-- 审核不通过提示 -->
+        <el-dialog title="提示" :visible.sync="noReview" ref="formNo" width="400px" center>
+            <el-form ref="formNo" :model="formNo" :rules="rules" label-width="100px" >
+                <el-form-item label="不通过理由" prop="reason">
+                    <el-input type="textarea" v-model="formNo.reason"></el-input>
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
-                <el-button @click="addVisible = false">取 消</el-button>
-                <el-button type="primary" @click="addSave('form')">确 定</el-button>
-            </span>
-        </el-dialog>
-        <!-- 删除提示框 -->
-        <el-dialog title="提示" :visible.sync="delVisible" width="300px" center>
-            <div class="del-dialog-cnt">删除不可恢复，是否确定删除？</div>
-            <span slot="footer" class="dialog-footer">
-                <el-button @click="delVisible = false">取 消</el-button>
-                <el-button type="primary" @click="deleteRow">确 定</el-button>
+                <el-button @click="noReview = false">取消</el-button>
+                <el-button type="primary" @click="reviewNo('formNo')">确定</el-button>
             </span>
         </el-dialog>
     </div>
@@ -83,151 +109,146 @@
         name: 'entername',
         data: function(){
             return {
-                dialogTitle: "添加竞赛活动",
                 tableData: [],
-                addVisible: false,   // 添加弹框是否显示
-                delVisible: false,   //删除弹框是否显示
-                form: {
-                    name: '',
-                },
+                yesReview: false,   //审核确定弹框
+                noReview: false,  //审核不通过确定
                 formInline: {
                     compId: '',
-                    leixing: '0'
+                    leixing: '',
+                    shenhe: ''
                 },
-                selectItem:[],
+                formNo:{
+                    reason: ''
+                },
                 rules:{
-                    name:[
-                        { required: true, message: '请输入活动', trigger: 'blur' }
+                    reason:[
+                        { required: true, message: '请输入原因', trigger: 'blur' }
                     ]
                 },
-                itemId: 0,
-                //服务器地址
-                deleteNameId: "",  //删除活动的id
+                compId: '',
+                lexing: '',
+                shenhe: '',
+                selectItem:[],
+                itemId: 0, // 审核Id
                 cur_page: 1,   //当前页
+                limit: 10,  //每页几条
                 totalNumber: 1  //列表总条数
             }
         },
         methods:{
-            // 
+            // 项目列表
             getSelect(){
                 this.$axios.post(globalServerUrl+"/baoming/getAllCompList.do"
                 ).then((res) => {
-                    console.log(res);
                     this.selectItem = res.data;
-                    // this.tableData = res.data.data;
-                    // this.totalNumber = res.data.count;
                 })
             },
             // 查询
             search(formName){
                 this.$refs[formName].validate((valid) => {
-                    console.log(valid)
+                    if(valid){
+                        this.compId = this.formInline.compId;
+                        this.leixing = this.formInline.leixing;
+                        this.shenhe = this.formInline.shenhe;
+                        this.getData(this.limit,this.cur_page,this.compId,this.leixing,this.shenhe);
+                    }
+                })
+            },
+            // 导出
+            exportExcel(formName){
+                this.$refs[formName].validate((valid) => {
+                    if(valid){
+                        this.compId = this.formInline.compId;
+                        this.leixing = this.formInline.leixing;
+                        this.shenhe = this.formInline.shenhe;
+                        this.$axios.post(globalServerUrl+"/baoming/exportExcel.do",Qs.stringify({
+                            compId: this.compId,
+                            leixing: this.leixing,
+                            shenhe:  this.shenhe
+                        })).then((res) => {
+                            window.location.href = globalServerUrl + res.data.url;
+                        })
+                    }
                 })
             },
             // 初始化表格数据
-            getData() {
-                this.$axios.post(globalServerUrl+"/competition/zongcompList.do",Qs.stringify({
-                    page: this.cur_page,
-                    limit: 10
-                })
-                ).then((res) => {
+            getData(limit,page,compId,leixing,shenhe) {
+                this.$axios.post(globalServerUrl+"/baoming/getBaomingList.do",Qs.stringify({
+                    limit:limit,
+                    page:page,
+                    compId:compId,
+                    leixing:leixing,
+                    shenhe: shenhe
+                })).then((res) => {
                     this.tableData = res.data.data;
                     this.totalNumber = res.data.count;
                 })
             },
-            // 添加竞赛名称
-            addSave(formName) {
-                this.$refs[formName].validate((valid) => {
-                    if (valid) {
-                        if(this.dialogTitle === "添加竞赛活动"){ // 添加时的保存
-                            // 判断form中是否有id，若有则删除
-                            if(this.form.id === undefined){
-                            }else{
-                                this.$delete(this.form,"id");
-                            }
-                            this.$axios.post(globalServerUrl+"/competition/zongcominsert.do",Qs.stringify(this.form
-                            )).then((res) => {
-                                if(res.data == 1){
-                                    this.addVisible = false;
-                                    this.$message.success(`添加成功`);
-                                    this.getData();
-                                }else if(res.data == 2){
-                                    this.$message.error(`添加失败`);
-                                }
-                            })
-                        }else if(this.dialogTitle === "编辑竞赛活动"){  //编辑时的保存
-                            this.$set(this.form,"id",this.itemId);
-                            this.$axios.post(globalServerUrl+"/competition/editzongcompSave.do",Qs.stringify(this.form
-                            )).then((res) => {
-                                if(res.data == 1){
-                                    this.addVisible = false;
-                                    this.$message.success(`修改成功`);
-                                    this.getData();
-                                }else if(res.data == 2){
-                                    this.$message.error(`修改失败`);
-                                }
-                            })
-                        }
-                        
-                    } else {
-                        console.log('error submit!!');
-                        return false;
-                    }
-                });
-                
-            },
-            // 编辑按钮
-            handleEdit(item){
+            // 审核通过按钮
+            handleYes(item){
                 this.itemId = item.id;
-                this.addVisible = true;
-                this.dialogTitle = "编辑竞赛活动";
-                this.form =  {
-                    name: item.name,
-                }
+                this.yesReview = true;
             },
-            // 查看所有项目
-            handleLook(item) {
-                this.$router.push({
-                    path: '/competitionItem',
-                    query:{
-                        zongcompId: item.id,
-                        heading: item.name
-                    }
-                })
-            },
-            // 添加按钮
-            handleAdd(){
-                this.form = {};
-                this.addVisible = true;
-                this.dialogTitle = "添加竞赛活动";
-            },
-            // 删除按钮
-            handleDelete(id) {
-                this.deleteNameId = id;
-                this.delVisible = true;
-            },
-            // 确定删除
-            deleteRow(){
-                this.$axios.post(globalServerUrl+"/competition/deletezongcomp.do",Qs.stringify({
-                    id: this.deleteNameId
+            // 确定审核通过
+            reviewYes(){
+                this.$axios.post(globalServerUrl+"/baoming/updateBMshenhe.do",Qs.stringify({
+                    id: this.itemId
                 })).then((res) => {
-                    if(res.data == 1){
-                        this.$message.success('删除成功');
-                        this.getData();
+                    if(res.data == true){
+                        this.msgYes();
                     }else{
-                        this.$message.error('删除失败');
+                        this.msgNo();
                     }
-                    this.delVisible = false;
+                    this.yesReview = false;
+                    this.getData(this.limit,this.cur_page,this.compId,this.leixing,this.shenhe);
                 })
+            },
+            // 审核通过成功
+            msgYes(){
+                this.$message({
+                    message: '操作成功',
+                    type: 'success'
+                });
+            },
+            // 审核通过失败
+            msgNo(){
+                this.$message.error('操作失败');
+            },
+            //审核不通过按钮
+            handleNo(item){
+                this.itemId = item.id;
+                this.noReview = true;
+            },
+            //确定审核不通过
+            reviewNo(formName){
+                this.$refs[formName].validate((valid) => {
+                    if(valid){
+                        this.$axios.post(globalServerUrl+"/baoming/updateBMshenheno.do",Qs.stringify({
+                            id: this.itemId,
+                            reson: this.formNo.reason
+                        })).then((res) => {
+                            console.log(res);
+                            console.log(res.data);
+                            console.log(res.data == true);
+                            if(res.data == true){
+                                this.msgYes();
+                            }else{
+                                this.msgNo();
+                            }
+                            this.noReview = false;
+                            this.getData(this.limit,this.cur_page,this.compId,this.leixing,this.shenhe);
+                        })
+                    }
+                })
+                
             },
             // 分页
             handleCurrentChange(val) {
                 this.cur_page = val;
-                this.getData();
+                this.getData(this.limit,this.cur_page,this.compId,this.leixing,this.shenhe);
             }
         },
         created(){
-            this.getData();
             this.getSelect();
         }
     }

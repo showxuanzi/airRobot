@@ -18,9 +18,9 @@
                 <el-table-column label="添加操作" width="400" align="center">
                     <template slot-scope="scope">
                         <el-button type="primary" plain @click="addComRule(scope.row)">比赛规则</el-button>
-                        <el-button type="success" plain @click="">规则答疑</el-button>
+                        <el-button type="success" plain >规则答疑</el-button>
                         <el-button type="info" plain @click="addComVideo(scope.row)">比赛视频</el-button>
-                        <el-button type="warning" plain @click="">获奖学生</el-button>
+                        <el-button type="warning" plain>获奖学生</el-button>
                     </template>
                 </el-table-column> 
                 <el-table-column label="操作" width="150" align="center">
@@ -141,24 +141,24 @@
                                 this.$axios.post(globalServerUrl+"/competition/addcomp.do",Qs.stringify(this.form
                                 )).then((res) => {
                                     if(res.data == 1){
-                                        this.addVisible = false;
                                         this.$message.success(`添加成功`);
                                         this.getData();
                                     }else if(res.data == 2){
                                         this.$message.error(`添加失败`);
                                     }
+                                    this.addVisible = false;
                                 })
                             }else if(this.dialogTitle === "编辑竞赛活动"){  //编辑时的保存
                                 this.$set(this.form,"id",this.itemId);
                                 this.$axios.post(globalServerUrl+"/competition/editcomp.do",Qs.stringify(this.form
                                 )).then((res) => {
                                     if(res.data == 1){
-                                        this.addVisible = false;
                                         this.$message.success(`修改成功`);
                                         this.getData();
                                     }else if(res.data == 2){
                                         this.$message.error(`修改失败`);
                                     }
+                                    this.addVisible = false;
                                 })
                             }
                         }

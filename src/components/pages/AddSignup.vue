@@ -68,7 +68,7 @@
       [{'header': 1}, {'header': 2}],               // custom button values
       [{'list': 'ordered'}, {'list': 'bullet'}],
       [{'script': 'sub'}, {'script': 'super'}],      // superscript/subscript
-      [{'indent': '-1'}, {'indent': '+1'}],          // outdent/indent
+      [{'text-indent': '-1'}, {'text-indent': '+1'}],          // outdent/indent
       [{'direction': 'rtl'}],                         // text direction
 
       [{'size': ['small', false, 'large', 'huge']}],  // custom dropdown

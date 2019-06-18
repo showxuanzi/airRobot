@@ -49,10 +49,12 @@
                         icon: 'el-icon-lx-warn',
                         index: '',
                         title: '通知公告',
-                        subs: [{
-                                index: 'signup',
-                                title: '赛事报名'
-                            },{
+                        subs: [
+                            // {
+                            //     index: 'signup',
+                            //     title: '赛事报名'
+                            // },
+                            {
                                 index: 'rule',
                                 title: '比赛规则'
                             }]

@@ -5,13 +5,14 @@ Vue.use(Router);
 
 export default new Router({
     mode:'history',
+    base: '/admin/',
     routes: [
         {
             path: '/',
             redirect: '/home'
         },
         {
-            path: '/',
+            path: '/', 
             component: resolve => require(['../components/common/Home.vue'], resolve),
             meta: { title: '自述文件' },
             children:[{
@@ -136,7 +137,7 @@ export default new Router({
             ]
         },{
             path: '/login',
-            component: resolve => require(['../components/page/Login.vue'], resolve)
+            component: resolve => require(['../components/pages/Login.vue'], resolve)
         },{
             path: '/registered',
             component: resolve => require(['../components/page/Registered.vue'], resolve)
