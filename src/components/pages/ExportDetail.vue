@@ -2,8 +2,8 @@
     <div>
         <div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item><i class="el-icon-lx-calendar"></i> 新闻动态</el-breadcrumb-item>
-                <el-breadcrumb-item>新闻详情</el-breadcrumb-item>
+                <el-breadcrumb-item><i class="el-icon-lx-calendar"></i> 风采展示</el-breadcrumb-item>
+                <el-breadcrumb-item>添加专家</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
         <div class="container"  v-loading="loading" 
@@ -11,32 +11,16 @@
                 element-loading-spinner="el-icon-loading"
                 element-loading-background="rgba(0, 0, 0, 0.6)">
             <el-form ref="form" :model="form" :rules="rules" label-width="80px" class="news-form">
-                <el-form-item label="新闻标题" prop="title">
-                    <el-input v-model="form.title"></el-input>
+                <el-form-item label="姓名" prop="xingming">
+                    <el-input v-model="form.xingming"></el-input>
                 </el-form-item>
-                <el-form-item label="创建时间" prop="createtime">
-                     <el-date-picker
-                        v-model="form.createtime"
-                        type="datetime"
-                        value-format="yyyy-MM-dd HH:mm:ss"
-                        placeholder="选择创建时间"
-                        default-time="12:00:00">
-                    </el-date-picker>
-                </el-form-item>
-                <el-form-item label="新闻分类" prop="type">
-                    <el-select placeholder="请选择" v-model="form.type">
-                        <el-option
-                          v-for="item in selectOptions"
-                          :key="item.value"
-                          :label="item.label"
-                          :value="item.value">
-                        </el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="新闻摘要" prop="keyword">
-                    <el-input type="textarea" v-model="form.keyword"></el-input>
-                </el-form-item> 
-                <el-form-item label="封面图片" prop="imgpath">
+                <el-form-item label="职位" prop="zhiwei">
+                    <el-input v-model="form.zhiwei"></el-input>
+                </el-form-item>   
+                 <el-form-item label="简介" prop="jianjie">
+                    <el-input type="textarea" :rows="2" v-model="form.jianjie"></el-input>
+                </el-form-item>    
+                <el-form-item label="照片" prop="imgpath">
                     <div class="crop-demo">
                         <img :src="cropImg" class="pre-img" v-show="cropImg">
                         <div class="crop-demo-btn">选择图片
@@ -57,16 +41,16 @@
                         >
                 </el-upload>
                 <!-- 图片上传组件辅助-->
-                 <el-form-item label="新闻内容" prop="content">
+                 <el-form-item label="主要成就" prop="chengjiu">
                     <quill-editor 
                         ref="myTextEditor" 
-                        v-model="content" 
+                        v-model="chengjiu" 
                         :options="editorOption"
                         @change="onEditorChange($event)"
                         @ready="onEditorReady($event)"
                     ></quill-editor>
                 </el-form-item>
-                <el-button class="editor-btn" type="primary" @click="submit('form')">保存编辑</el-button>
+                <el-button class="editor-btn" type="primary" @click="submit('form')">确认修改</el-button>
             </el-form> 
         </div>
     </div>
@@ -99,52 +83,34 @@
       ['clean']                                         // remove formatting button
     ]
     export default {
-        name: 'newsdetail',
+        name: 'addexport',
         data: function(){
             return {
                 form:{
-                    title:"",
-                    type: "",
+                    xingming:"",
+                    zhiwei: "",
                     imgpath: "",
-                    content: "",
-                    keyword: "",
-                    createtime:""
+                    jianjie: "",
+                    chengjiu: ""
                 },
+                chengjiu: '',
+                loading: false,
                 rules: {
-                    title: [
-                        { required: true, message: '请输入新闻标题', trigger: 'blur' }
+                    xingming: [
+                        { required: true, message: '请输入姓名', trigger: 'blur' }
                     ],
-                    createtime: [
-                        { required: true, message: '请选择创建时间', trigger: 'blur' }
+                    zhiwei: [
+                        { required: true, message: '请输入职位', trigger: 'blur' }
                     ],
-                    type: [
-                        { required: true, message: '请选择新闻分类', trigger: 'change' }
-                    ],
-                    keyword: [
-                        { required: true, message: '请输入新闻摘要', trigger: 'blur' }
-                    ],
-                    imgpath: [
-                        { required: true, message: '请上传封面图片', trigger: 'change' }
-                    ],
-                    content: [
-                        { required: true, message: '请输入新闻内容', trigger: 'blur' }
+                    jianjie: [
+                        { required: true, message: '请输入简介', trigger: 'blur' }
                     ]
                 },
-                selectOptions: [{
-                    value: '赛事动态',
-                    label: '赛事动态'
-                },{
-                    value: '前沿科技',
-                    label: '前沿科技'
-                }],
                 defaultSrc: './static/img/img.jpg',
-                globalServerUrl: "",
                 cropImg: '',
-                newsId: 0,
-                loading: false,
                 quillUpdateImg: false, // 根据图片上传状态来确定是否显示loading动画，刚开始是false,不显示
                 serverUrl: '',  // 上传的图片服务器地址
-                content: '',
+                exportId: '',
                 editorOption: {
                     placeholder: 'Hello World',
                     theme: 'snow',  // or 'bubble'
@@ -170,50 +136,45 @@
             quillEditor
         },
         created(){
-            this.newsId = this.$route.query.id;
+            this.exportId = this.$route.query.id;
             this.serverUrl = globalServerUrl + "/activity/fileupload.do";
             this.getData();
         },
         methods: {
-            getData(){
-                this.$axios.post(globalServerUrl+"/news/editnews.do",Qs.stringify({
-                    id: this.newsId
-                })).then((res)=>{
-                    console.log(res)
-                    this.form = res.data;
-                    this.cropImg = this.form.imgpath;
-                    this.content =  this.form.content;
-                    this.$axios.post(globalServerUrl+this.form.content).then((res)=>{
-                        this.content = res.data;
-                    })
-                })
-            },
             onEditorChange({ editor, html, text }) {
-                this.content = html;
+                this.chengjiu = html;
             },
             onEditorReady(event){
 
             },
+            getData(){
+                this.$axios.post(globalServerUrl+"/zhuanjia/zhuanjiadetail.do",Qs.stringify({
+                    id: this.exportId
+                })).then((res)=>{
+                    this.form = res.data;
+                    this.cropImg = this.form.imgpath;
+                    this.chengjiu =  this.form.chengjiu;
+                })
+            },
             submit(formName){
-                this.form.content = this.content;
-                this.$set(this.form,"createuserid",1);
-                this.$set(this.form,"id",this.newsId);
+                this.form.chengjiu = this.chengjiu;
+                this.$set(this.form,"id",this.exportId);
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        this.$axios.post(globalServerUrl+"/news/editnewssave.do",Qs.stringify(this.form)
+                        this.$axios.post(globalServerUrl+"/zhuanjia/editzj.do",Qs.stringify(this.form)
                         ).then((res)=>{
                             if(res.data == 1){
                                 this.$message.success('修改成功！');
-                                this.$router.push('/news');
-                            }else if(res.data == 2){
-                                this.$message.error("修改失败！");
+                                this.$router.push("/export");
                             }
                         })
                     } else {
-                        console.log('error submit!!');
+                        this.$message.error('修改失败！');
                         return false;
                     }
                 });
+                
+                
             },
            // 富文本图片上传前
             beforeUpload(file) {
@@ -225,10 +186,9 @@
                 //   this.$message.error('上传头像图片只能是 JPG 格式!');
                 // }
                 if (!isLt1M) {
-                  this.$message.error('上传图片大小不能超过 1MB!');
-                  this.loading = false;
+                    this.$message.error('上传图片大小不能超过 1MB!');
+                    this.loading = false;
                 }
-                // return isJPG && isLt1M;
                 return isLt1M;
             },
             uploadSuccess(res, file) {
@@ -252,19 +212,8 @@
             // 富文本图片上传失败
             uploadError() {
                 // loading动画消失
-                this.quillUpdateImg = false
+                this.loading = false;
                 this.$message.error('图片插入失败')
-            },
-            //文件上传成功的钩子函数
-            handleSuccess(res, file) {
-                this.$message({
-                    type: 'success',
-                    message: '图片上传成功',
-                    duration: 6000
-                });
-                if(res){
-                    this.form.imgpath = globalServerUrl + res;
-                }
             },
             setImage(e){
                 this.loading = true;

@@ -277,10 +277,6 @@
         border: 1px solid #eee;
         border-radius: 5px;
     }
-    .crop-demo{
-        /*display: flex;
-        align-items: flex-end;*/
-    }
     .uploadBox{
         position: relative;
     }

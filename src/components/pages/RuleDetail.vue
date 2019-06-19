@@ -163,6 +163,9 @@
                     this.form = res.data;
                     this.cropImg = this.form.imgpath;
                     this.content =  this.form.content;
+                    this.$axios.post(globalServerUrl+this.form.content).then((res)=>{
+                        this.content = res.data;
+                    })
                 })
             },
             onEditorChange({ editor, html, text }) {
@@ -182,7 +185,7 @@
                         ).then((res)=>{
                             if(res.data == 1){
                                 this.$message.success('修改成功！');
-                                this.$router.push('/signup');
+                                this.$router.push('/rule');
                             }else if(res.data == 2){
                                 this.$message.error("修改失败！");
                             }

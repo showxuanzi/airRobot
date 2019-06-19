@@ -76,6 +76,34 @@ export default new Router({
                     component: resolve => require(['../components/pages/EnterName.vue'], resolve),
                     meta: { title: '报名信息'}
                 },{
+                    path: '/export',
+                    component: resolve => require(['../components/pages/Export.vue'], resolve),
+                    meta: { title: '专家'}
+                },{
+                    path: '/addExport',
+                    component: resolve => require(['../components/pages/AddExport.vue'], resolve),
+                    meta: { title: '添加专家'}
+                },{
+                    path: '/exportDetail',
+                    component: resolve => require(['../components/pages/ExportDetail.vue'], resolve),
+                    meta: { title: '修改专家信息'}
+                },{
+                    path: '/referee',
+                    component: resolve => require(['../components/pages/Referee.vue'], resolve),
+                    meta: { title: '裁判'}
+                },{
+                    path: '/addReferee',
+                    component: resolve => require(['../components/pages/AddReferee.vue'], resolve),
+                    meta: { title: '添加裁判'}
+                },{
+                    path: '/player',
+                    component: resolve => require(['../components/pages/Player.vue'], resolve),
+                    meta: { title: '选手'}
+                },{
+                    path: '/addPlayer',
+                    component: resolve => require(['../components/pages/AddPlayer.vue'], resolve),
+                    meta: { title: '添加选手'}
+                },{
                     path: '/dashboard',
                     component: resolve => require(['../components/page/Dashboard.vue'], resolve),
                     meta: { title: '系统首页' }

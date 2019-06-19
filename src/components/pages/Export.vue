@@ -2,17 +2,16 @@
     <div>
         <div class="container">
             <div class="handle-box">
-                <el-button type="primary" icon="delete" class="handle-del mr10" @click="handleAdd()">添加新闻</el-button>
+                <el-button type="primary" icon="delete" class="handle-del mr10" @click="handleAdd()">添加专家</el-button>
             </div>
             <el-table :data="tableData" border class="table" id="out-table">
-                <el-table-column label="封面图片" align="center">
+                <el-table-column label="照片" align="center">
                     <template slot-scope="scope">
                         <img class="banner" :src="scope.row.imgpath">
                     </template>
                 </el-table-column>
-                <el-table-column prop="title" label="新闻标题" align="center"></el-table-column>
-                <el-table-column prop="type" label="新闻分类" align="center" width="200"></el-table-column>
-                <el-table-column prop="createtime" label="创建时间" width="200" align="center"></el-table-column>
+                <el-table-column prop="xingming" label="姓名" align="center"></el-table-column>
+                <el-table-column prop="zhiwei" label="职位" align="center"></el-table-column>
                 <el-table-column label="操作" width="180" align="center">
                     <template slot-scope="scope">
                         <el-button type="text" icon="el-icon-edit" @click="handleEdit(scope.row.id)">编辑</el-button>
@@ -38,19 +37,14 @@
 <script>
     import Qs from 'qs';
     export default {
-        name: 'news',
+        name: 'export',
         data: function(){
             return {
                 tableData: [],
                 oldtableData: [],
                 delVisible: false,
                 limit: '10',
-                form: {
-                    title: '',
-                    type: '',
-                    createtime: ''
-                },
-                newsId: "",
+                exportId: "",
                 totalNumber:1,
                 cur_page: 1
             }
@@ -60,7 +54,7 @@
         methods:{
             // 初始化表格数据
             getData(page,limit) {
-                this.$axios.post(globalServerUrl+"/news/newsList.do", Qs.stringify({
+                this.$axios.post(globalServerUrl+"/zhuanjia/zhuanjialist.do", Qs.stringify({
                     page: page,
                     limit: limit
                 })).then((res) => {
@@ -78,7 +72,7 @@
             // 编辑按钮
             handleEdit(id) {
                 this.$router.push({
-                    path: '/newsDetail',
+                    path: '/exportDetail',
                     query: {
                         id: id
                     }
@@ -86,17 +80,17 @@
             },
             // 添加按钮
             handleAdd(){
-                this.$router.push("/addNews");
+                this.$router.push("/addExport");
             },
             // 删除按钮
             handleDelete(id) {
                 this.delVisible = true;
-                this.newsId = id;
+                this.exportId = id;
             },
             // 确定删除
             deleteRow(){
-                this.$axios.post(globalServerUrl+"/news/deletenews.do", Qs.stringify({
-                    id: this.newsId
+                this.$axios.post(globalServerUrl+"/zhuanjia/deletezj.do", Qs.stringify({
+                    id: this.exportId
                 })).then((res) => {
                     if(res.data == 1){
                         this.$message.success('删除成功');
@@ -105,19 +99,6 @@
                     }
                 })
                 
-            },
-            // 上传图片
-            setImage(e){
-                const file = e.target.files[0];
-                if (!file.type.includes('image/')) {
-                    return;
-                }
-                const reader = new FileReader();
-                reader.onload = (event) => {
-                    this.form.url = event.target.result;
-                    this.$refs.cropper && this.$refs.cropper.replace(event.target.result);
-                };
-                reader.readAsDataURL(file);
             },
             handleCurrentChange(val) {
                 this.cur_page = val;

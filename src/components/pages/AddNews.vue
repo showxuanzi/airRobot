@@ -14,6 +14,16 @@
                 <el-form-item label="新闻标题" prop="title">
                     <el-input v-model="form.title"></el-input>
                 </el-form-item>
+                <el-form-item label="创建时间" prop="createtime">
+                    <!-- <el-input v-model="form.createtime"></el-input> -->
+                     <el-date-picker
+                        v-model="form.createtime"
+                        value-format="yyyy-MM-dd HH:mm:ss"
+                        type="datetime"
+                        placeholder="选择创建时间"
+                        default-time="12:00:00">
+                    </el-date-picker>
+                </el-form-item>
                 <el-form-item label="新闻分类" prop="type">
                     <el-select placeholder="请选择" v-model="form.type">
                         <el-option
@@ -105,6 +115,9 @@
                     title: [
                         { required: true, message: '请输入新闻标题', trigger: 'blur' }
                     ],
+                    createtime: [
+                        { required: true, message: '请选择创建时间', trigger: 'blur' }
+                    ],
                     type: [
                         { required: true, message: '请选择新闻分类', trigger: 'change' }
                     ],
@@ -126,7 +139,6 @@
                     label: '前沿科技'
                 }],
                 defaultSrc: './static/img/img.jpg',
-                
                 cropImg: '',
                 newsId: 0,
                 quillUpdateImg: false, // 根据图片上传状态来确定是否显示loading动画，刚开始是false,不显示
@@ -172,6 +184,7 @@
                 this.$set(this.form,"createuserid",1);
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
+                        console.log(this.form);
                         this.$axios.post(globalServerUrl+"/news/addnews.do",Qs.stringify(this.form)
                         ).then((res)=>{
                             if(res.data == 1){
@@ -252,7 +265,7 @@
                     this.cropImg = globalServerUrl + res.data;
                     this.form.imgpath = globalServerUrl + res.data;
                 })
-            },
+            }
         }
     }
 </script>

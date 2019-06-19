@@ -2,17 +2,16 @@
     <div>
         <div class="container">
             <div class="handle-box">
-                <el-button type="primary" icon="delete" class="handle-del mr10" @click="handleAdd()">添加新闻</el-button>
+                <el-button type="primary" icon="delete" class="handle-del mr10" @click="handleAdd()">添加选手</el-button>
             </div>
             <el-table :data="tableData" border class="table" id="out-table">
-                <el-table-column label="封面图片" align="center">
+                <el-table-column label="照片" align="center">
                     <template slot-scope="scope">
                         <img class="banner" :src="scope.row.imgpath">
                     </template>
                 </el-table-column>
-                <el-table-column prop="title" label="新闻标题" align="center"></el-table-column>
-                <el-table-column prop="type" label="新闻分类" align="center" width="200"></el-table-column>
-                <el-table-column prop="createtime" label="创建时间" width="200" align="center"></el-table-column>
+                <el-table-column prop="title" label="姓名" align="center"></el-table-column>
+                <el-table-column prop="type" label="职称" align="center"></el-table-column>
                 <el-table-column label="操作" width="180" align="center">
                     <template slot-scope="scope">
                         <el-button type="text" icon="el-icon-edit" @click="handleEdit(scope.row.id)">编辑</el-button>
@@ -38,7 +37,7 @@
 <script>
     import Qs from 'qs';
     export default {
-        name: 'news',
+        name: 'player',
         data: function(){
             return {
                 tableData: [],
@@ -56,6 +55,7 @@
             }
         },
         updated() {
+            console.log(123);
         },
         methods:{
             // 初始化表格数据
@@ -86,7 +86,7 @@
             },
             // 添加按钮
             handleAdd(){
-                this.$router.push("/addNews");
+                this.$router.push("/addExport");
             },
             // 删除按钮
             handleDelete(id) {

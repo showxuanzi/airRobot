@@ -47,7 +47,7 @@
                         title: '新闻动态'
                     },{
                         icon: 'el-icon-lx-warn',
-                        index: '',
+                        index: 'rule',
                         title: '通知公告',
                         subs: [
                             // {
@@ -59,11 +59,28 @@
                                 title: '比赛规则'
                             }]
                     },{
-                        icon: 'el-icon-lx-calendar',
+                        icon: 'el-icon-bangzhu',
                         index: 'competition',
                         title: '竞赛活动'
                     },{
-                        icon: 'el-icon-lx-calendar',
+                        icon: 'el-icon-magic-stick',
+                        index: 'export',
+                        title: '风采展示',
+                        subs: [
+                            {
+                                index: 'export',
+                                title: '专家'
+                            },
+                            {
+                                index: 'referee',
+                                title: '裁判'
+                            },{
+                                index: 'player',
+                                title: '选手'
+                            }
+                        ]
+                    },{
+                        icon: 'el-icon-notebook-2',
                         index: 'entername',
                         title: '报名信息'
                     },
