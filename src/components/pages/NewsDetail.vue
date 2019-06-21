@@ -179,7 +179,6 @@
                 this.$axios.post(globalServerUrl+"/news/editnews.do",Qs.stringify({
                     id: this.newsId
                 })).then((res)=>{
-                    console.log(res)
                     this.form = res.data;
                     this.cropImg = this.form.imgpath;
                     this.content =  this.form.content;
@@ -190,9 +189,6 @@
             },
             onEditorChange({ editor, html, text }) {
                 this.content = html;
-            },
-            onEditorReady(event){
-
             },
             submit(formName){
                 this.form.content = this.content;

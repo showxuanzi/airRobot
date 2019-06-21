@@ -2,8 +2,9 @@
     <div>
         <div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item><i class="el-icon-lx-calendar"></i> 风采展示</el-breadcrumb-item>
-                <el-breadcrumb-item>添加专家</el-breadcrumb-item>
+                <el-breadcrumb-item><i class="el-icon-magic-stick"></i> 风采展示</el-breadcrumb-item>
+                <el-breadcrumb-item>专家</el-breadcrumb-item>
+                 <el-breadcrumb-item>修改专家信息</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
         <div class="container"  v-loading="loading" 

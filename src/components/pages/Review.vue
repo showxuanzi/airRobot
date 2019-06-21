@@ -2,22 +2,17 @@
     <div>
         <div class="container">
             <div class="handle-box">
-                <el-button type="primary" icon="delete" class="handle-del mr10" @click="handleAdd()">添加专家</el-button>
+                <el-button type="primary" icon="delete" class="handle-del mr10" @click="handleAdd()">添加视频</el-button>
             </div>
             <el-table :data="tableData" border class="table" id="out-table">
-                <el-table-column label="照片" align="center">
+                <el-table-column label="封面图片" align="center">
                     <template slot-scope="scope">
                         <img class="banner" :src="scope.row.imgpath">
                     </template>
                 </el-table-column>
-                <el-table-column prop="xingming" label="姓名" align="center"></el-table-column>
-                <el-table-column prop="zhiwei" label="职位" align="center"></el-table-column>
-                <el-table-column label="排序" width="180" align="center">
-                    <template slot-scope="scope">
-                        <el-button type="text" icon="el-icon-top" class="ht-row" @click="handleTop(scope.row.id)"></el-button>
-                        <el-button type="text" icon="el-icon-bottom" class="blue ht-row" @click="handleBottom(scope.row.id)"></el-button>
-                    </template>
-                </el-table-column>
+                <el-table-column prop="title" label="视频标题" align="center"></el-table-column>
+                <el-table-column prop="content" label="视频简介" align="center"></el-table-column>
+                <el-table-column prop="createTime" label="创建时间" width="200" align="center"></el-table-column>
                 <el-table-column label="操作" width="180" align="center">
                     <template slot-scope="scope">
                         <el-button type="text" icon="el-icon-edit" @click="handleEdit(scope.row.id)">编辑</el-button>
@@ -43,14 +38,19 @@
 <script>
     import Qs from 'qs';
     export default {
-        name: 'export',
+        name: 'review',
         data: function(){
             return {
                 tableData: [],
                 oldtableData: [],
                 delVisible: false,
                 limit: '10',
-                exportId: "",
+                form: {
+                    title: '',
+                    type: '',
+                    createtime: ''
+                },
+                reviewId: "",
                 totalNumber:1,
                 cur_page: 1
             }
@@ -60,7 +60,7 @@
         methods:{
             // 初始化表格数据
             getData(page,limit) {
-                this.$axios.post(globalServerUrl+"/zhuanjia/zhuanjialist.do", Qs.stringify({
+                this.$axios.post(globalServerUrl+"/comreview/reviewList.do", Qs.stringify({
                     page: page,
                     limit: limit
                 })).then((res) => {
@@ -78,7 +78,7 @@
             // 编辑按钮
             handleEdit(id) {
                 this.$router.push({
-                    path: '/exportDetail',
+                    path: '/reviewDetail',
                     query: {
                         id: id
                     }
@@ -86,17 +86,17 @@
             },
             // 添加按钮
             handleAdd(){
-                this.$router.push("/addExport");
+                this.$router.push("/addReview");
             },
             // 删除按钮
             handleDelete(id) {
                 this.delVisible = true;
-                this.exportId = id;
+                this.reviewId = id;
             },
             // 确定删除
             deleteRow(){
-                this.$axios.post(globalServerUrl+"/zhuanjia/deletezj.do", Qs.stringify({
-                    id: this.exportId
+                this.$axios.post(globalServerUrl+"/comreview/delete.do", Qs.stringify({
+                    id: this.reviewId
                 })).then((res) => {
                     if(res.data == 1){
                         this.$message.success('删除成功');
@@ -106,41 +106,22 @@
                 })
                 
             },
+            // 上传图片
+            setImage(e){
+                const file = e.target.files[0];
+                if (!file.type.includes('image/')) {
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    this.form.url = event.target.result;
+                    this.$refs.cropper && this.$refs.cropper.replace(event.target.result);
+                };
+                reader.readAsDataURL(file);
+            },
             handleCurrentChange(val) {
                 this.cur_page = val;
                 this.getData(this.cur_page,this.limit);
-            },
-            // 上升
-            handleTop(id){
-                this.$axios.post(globalServerUrl+"/zhuanjia/zhuanjiaorder.do", Qs.stringify({
-                    id: id,
-                    fangxiang: 1
-                })).then((res) => {
-                    console.log(res);
-                    if(res.data == 1){
-                        this.getData(this.cur_page,this.limit);
-                    }else if( res.data == 2){
-                        this.$message.error('操作失败');
-                    }else if( res.data == 3){
-                        this.$message.error('已经是第一位了');
-                    }
-                })
-            },
-            // 下降
-            handleBottom(id){
-                this.$axios.post(globalServerUrl+"/zhuanjia/zhuanjiaorder.do", Qs.stringify({
-                    id: id,
-                    fangxiang: 2
-                })).then((res) => {
-                    console.log(res);
-                    if(res.data == 1){
-                        this.getData(this.cur_page,this.limit);
-                    }else if( res.data == 2){
-                        this.$message.error('操作失败');
-                    }else if( res.data == 4){
-                        this.$message.error('已经是最后一位了');
-                    }
-                })
             }
         },
         created(){
@@ -214,31 +195,5 @@
     .cell img.banner{
         height: 50px;
         width: auto;
-    }
-    .ht-row{
-        display: inline-block;
-        width: 25px;
-        height: 25px;
-        text-align: center;
-        line-height: 23px;
-        padding: 0;
-        background-color: #fa820c;
-        color: #fff;
-        font-weight: 900;
-        border-radius: 50%;
-        font-size: 16px;
-    }
-    .ht-row:hover,.ht-row:active,.ht-row:focus{
-        color: #e1750b;
-        background-color: #fff;
-        border-color: #e1750b;
-    }
-    .ht-row.blue{
-        background-color: #409EFF;
-    }
-    .ht-row.blue:hover,.ht-row.blue:active,.ht-row.blue:focus{
-        color: #409EFF;
-        background-color: #fff;
-        border-color: #409EFF;
     }
 </style>

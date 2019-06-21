@@ -104,6 +104,18 @@ export default new Router({
                     component: resolve => require(['../components/pages/AddPlayer.vue'], resolve),
                     meta: { title: '添加选手'}
                 },{
+                    path: '/review',
+                    component: resolve => require(['../components/pages/Review.vue'], resolve),
+                    meta: { title: '赛事回顾' }
+                },{
+                    path: 'reviewDetail',
+                    component: resolve => require(['../components/pages/ReviewDetail.vue'], resolve),
+                    meta: { title: '编辑视频' }
+                },{
+                    path: '/addReview',
+                    component: resolve => require(['../components/pages/AddReview.vue'], resolve),
+                    meta: { title: '添加视频' }
+                },{
                     path: '/dashboard',
                     component: resolve => require(['../components/page/Dashboard.vue'], resolve),
                     meta: { title: '系统首页' }

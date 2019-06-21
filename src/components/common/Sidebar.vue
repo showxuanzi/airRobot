@@ -80,6 +80,10 @@
                             }
                         ]
                     },{
+                        icon: 'el-icon-video-camera',
+                        index: 'review',
+                        title: '赛事回顾'
+                    },{
                         icon: 'el-icon-notebook-2',
                         index: 'entername',
                         title: '报名信息'

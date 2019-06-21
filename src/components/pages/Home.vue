@@ -10,8 +10,6 @@
                         <img class="banner" :src="scope.row.imgpath">
                     </template>
                 </el-table-column>
-                <!-- <el-table-column prop="order" label="顺序" width="100" align="center"></el-table-column> -->
-                <!-- <el-table-column prop="date" label="上传时间" width="200" align="center"></el-table-column> -->
                 <el-table-column label="操作" width="180" align="center">
                     <template slot-scope="scope">
                         <!-- <el-button type="text" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">编辑</el-button> -->
@@ -25,7 +23,7 @@
             element-loading-text="图片上传中，请稍等"
             element-loading-spinner="el-icon-loading"
             element-loading-background="rgba(0, 0, 0, 0.6)">
-            <el-form ref="form" :model="form" label-width="50px" >
+            <el-form ref="form" :model="form" label-width="60px" >
                 <el-form-item label="banner" class="uploadBox">
                     <img :src="cropImg" v-show="cropImg" class="pre-img">
                     <div class="crop-demo-btn">选择图片

@@ -100,7 +100,7 @@
       ['clean']                                         // remove formatting button
     ]
     export default {
-        name: 'addnews',
+        name: 'news',
         data: function(){
             return {
                 form:{
@@ -275,18 +275,8 @@
         display: block;
         margin: 0 auto;
     }
-    .el-input.el-input--small{
+    .el-input.el-input--small,.el-date-editor.el-input,.el-textarea.el-input--small{
         width: 400px;
-    }
-    .el-textarea.el-input--small{
-        width: 400px;
-    }
-    .content-title{
-        font-weight: 400;
-        line-height: 50px;
-        margin: 10px 0;
-        font-size: 22px;
-        color: #1f2f3d;
     }
     .pre-img{   
         width: auto;

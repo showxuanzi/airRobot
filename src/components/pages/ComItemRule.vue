@@ -219,11 +219,13 @@
                 this.ruleId = row.id;
                 this.addVisible = true;
                 this.dialogTitle = "编辑比赛规则";
-                this.form = {
+                this.$axios.post(globalServerUrl+row.content).then((res)=>{
+                    this.content = res.data;
+                    this.form = {
                     title: row.title,
                     content: row.content
                 };
-                this.content = row.content;
+                });
             },
             // 添加按钮
             handleAdd(){
