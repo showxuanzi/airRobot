@@ -13,7 +13,7 @@
     "babel-polyfill": "^6.23.0",
     "element-ui": "^2.9.1",
     "file-saver": "^2.0.1",
-    "mavon-editor": "^2.5.4",
+    "mavon-editor": "^2.8.2",
     "socket.io": "^2.2.0",
     "uws": "^99.0.0",
     "vue": "^2.5.16",
